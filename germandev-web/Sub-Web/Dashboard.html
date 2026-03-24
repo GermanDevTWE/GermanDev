@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard de GermanDev - Gestiona tu cuenta, compras y assets.">
+  <title>Dashboard | GermanDev</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%238B5CF6' rx='20' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>G</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/components.css">
+  <link rel="stylesheet" href="../CSS/animations.css">
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+  <link rel="stylesheet" href="../CSS/mobile.css">
+</head>
+<body>
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="preloader-logo">
+      <svg viewBox="0 0 100 100">
+        <rect x="10" y="10" width="80" height="80" rx="20" fill="none" stroke="#8B5CF6" stroke-width="3"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#8B5CF6" font-weight="bold">G</text>
+      </svg>
+    </div>
+  </div>
+  
+  <!-- Particles Canvas -->
+  <canvas id="particles-canvas"></canvas>
+  
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" style="display: none;">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <a href="../index.html" class="navbar-brand">
+        <div class="brand-logo">
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <span class="brand-text">GermanDev</span>
+      </a>
+      
+      <div class="navbar-nav">
+        <a href="../index.html" class="nav-link">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+        <a href="Proyects.html" class="nav-link">
+          <i class="fas fa-rocket"></i>
+          <span>Portfolio</span>
+        </a>
+        <a href="Assets.html" class="nav-link">
+          <i class="fas fa-box"></i>
+          <span>Assets</span>
+        </a>
+        <a href="Services.html" class="nav-link">
+          <i class="fas fa-briefcase"></i>
+          <span>Servicios</span>
+        </a>
+      </div>
+      
+      <div class="navbar-actions">
+        <button class="cart-btn" aria-label="Carrito">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" style="display: none;">0</span>
+        </button>
+        
+        <button class="auth-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Cart Sidebar -->
+  <div class="cart-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 299; opacity: 0; visibility: hidden; transition: all 0.3s;"></div>
+  <div class="cart-sidebar">
+    <div class="cart-header">
+      <h3 class="cart-title"><i class="fas fa-shopping-cart"></i> Tu Carrito</h3>
+      <button class="cart-close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span class="cart-total-label">Total:</span>
+        <span class="cart-total-value">$0.00</span>
+      </div>
+      <button class="btn btn-primary cart-checkout">
+        <i class="fas fa-credit-card"></i> Proceder al pago
+      </button>
+    </div>
+  </div>
+  
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="user-avatar">G</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Usuario</div>
+            <div class="sidebar-user-email" id="user-email">email@ejemplo.com</div>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Principal</span>
+          <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+              <a href="#" class="sidebar-menu-link active" onclick="showSection('overview'); return false;">
+                <i class="fas fa-chart-pie"></i>
+                <span>Resumen</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="#" class="sidebar-menu-link" onclick="showSection('purchases'); return false;">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Mis compras</span>
+                <span class="sidebar-badge" id="purchases-badge">0</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="#" class="sidebar-menu-link" onclick="showSection('assets'); return false;">
+                <i class="fas fa-box"></i>
+                <span>Mis assets</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Cuenta</span>
+          <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+              <a href="#" class="sidebar-menu-link" onclick="showSection('profile'); return false;">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="#" class="sidebar-menu-link" onclick="showSection('settings'); return false;">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <!-- Overview Section -->
+      <section class="dashboard-section active" id="section-overview">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">Resumen</h2>
+          <div class="dashboard-actions">
+            <a href="Assets.html" class="btn btn-secondary">
+              <i class="fas fa-store"></i> Ver tienda
+            </a>
+          </div>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--primary);">
+              <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="stat-purchases">0</div>
+              <div class="stat-card-label">Compras totales</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">
+              <i class="fas fa-box"></i>
+            </div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="stat-assets">0</div>
+              <div class="stat-card-label">Assets adquiridos</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="stat-spent">$0</div>
+              <div class="stat-card-label">Total gastado</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--info);">
+              <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="stat-member">1d</div>
+              <div class="stat-card-label">Miembro</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="recent-activity" style="margin-top: var(--space-8);">
+          <div class="recent-activity-header">
+            <h3 class="recent-activity-title">Compras recientes</h3>
+            <a href="#" class="recent-activity-link" onclick="showSection('purchases'); return false;">Ver todas</a>
+          </div>
+          <div id="recent-purchases">
+            <div class="empty-state" style="padding: var(--space-8);">
+              <div class="empty-state-icon"><i class="fas fa-shopping-bag"></i></div>
+              <h4 class="empty-state-title">No tienes compras recientes</h4>
+              <p class="empty-state-description">Explora la tienda y encuentra assets increíbles.</p>
+              <a href="Assets.html" class="btn btn-primary empty-state-action">Explorar la tienda</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Purchases Section -->
+      <section class="dashboard-section" id="section-purchases" style="display: none;">
+        <div class="purchases-header">
+          <h2 class="purchases-title">Mis compras</h2>
+          <a href="Assets.html" class="btn btn-secondary">
+            <i class="fas fa-store"></i> Ver tienda
+          </a>
+        </div>
+        
+        <div class="purchases-table-container">
+          <table class="purchases-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Fecha</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="purchases-table-body">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: var(--space-8);">
+                  <div class="empty-state">
+                    <div class="empty-state-icon"><i class="fas fa-shopping-bag"></i></div>
+                    <h4 class="empty-state-title">No tienes compras aún</h4>
+                    <p class="empty-state-description">Explora la tienda y encuentra assets increíbles.</p>
+                    <a href="Assets.html" class="btn btn-primary empty-state-action">Explorar la tienda</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      
+      <!-- Assets Section -->
+      <section class="dashboard-section" id="section-assets" style="display: none;">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">Mis assets</h2>
+          <a href="Assets.html" class="btn btn-secondary">
+            <i class="fas fa-store"></i> Ver tienda
+          </a>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3 style="margin-bottom: var(--space-4);">Tus assets</h3>
+          <div id="my-assets">
+            <div class="empty-state">
+              <div class="empty-state-icon"><i class="fas fa-box-open"></i></div>
+              <h4 class="empty-state-title">No tienes assets aún</h4>
+              <p class="empty-state-description">Compra assets en la tienda para verlos aquí.</p>
+              <a href="Assets.html" class="btn btn-primary empty-state-action">Explorar la tienda</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Profile Section -->
+      <section class="dashboard-section" id="section-profile" style="display: none;">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">Perfil</h2>
+        </div>
+        
+        <div class="profile-section">
+          <h3 class="profile-section-title">
+            <i class="fas fa-user"></i> Información del perfil
+          </h3>
+          
+          <div class="profile-avatar-section">
+            <div class="profile-avatar" id="profile-avatar">G</div>
+            <div class="profile-avatar-actions">
+              <button class="btn btn-secondary">
+                <i class="fas fa-upload"></i> Subir imagen
+              </button>
+              <p class="profile-avatar-hint">JPG, PNG o GIF. Máximo 2MB.</p>
+            </div>
+          </div>
+          
+          <form class="profile-form" onsubmit="updateProfile(event)">
+            <div class="form-group">
+              <label class="form-label">Nombre de usuario</label>
+              <input type="text" class="form-input" id="profile-username" value="Usuario">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" id="profile-email" value="email@ejemplo.com" readonly>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Usuario de Roblox</label>
+              <input type="text" class="form-input" id="profile-roblox" placeholder="@usuario">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Guardar cambios
+            </button>
+          </form>
+        </div>
+      </section>
+      
+      <!-- Settings Section -->
+      <section class="dashboard-section" id="section-settings" style="display: none;">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">Configuración</h2>
+        </div>
+        
+        <div class="settings-section">
+          <h3 class="profile-section-title">
+            <i class="fas fa-bell"></i> Configuración de la cuenta
+          </h3>
+          
+          <div class="settings-item">
+            <div class="settings-item-info">
+              <div class="settings-item-title">Notificaciones por email</div>
+              <div class="settings-item-description">Recibe actualizaciones sobre tus compras y nuevos assets</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" class="toggle-input" id="setting-email" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-info">
+              <div class="settings-item-title">Nuevos assets</div>
+              <div class="settings-item-description">Notifícame cuando haya nuevos assets disponibles</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" class="toggle-input" id="setting-assets">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h3 class="profile-section-title">
+            <i class="fas fa-lock"></i> Seguridad
+          </h3>
+          
+          <div class="form-group">
+            <label class="form-label">Contraseña actual</label>
+            <input type="password" class="form-input" placeholder="••••••••">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Nueva contraseña</label>
+            <input type="password" class="form-input" placeholder="••••••••">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Confirmar contraseña</label>
+            <input type="password" class="form-input" placeholder="••••••••">
+          </div>
+          
+          <button class="btn btn-secondary" onclick="changePassword()">
+            <i class="fas fa-key"></i> Cambiar contraseña
+          </button>
+        </div>
+        
+        <div class="settings-section danger-zone">
+          <h3 class="profile-section-title" style="color: var(--error);">
+            <i class="fas fa-exclamation-triangle"></i> Zona de peligro
+          </h3>
+          
+          <div style="margin-bottom: var(--space-4);">
+            <strong style="color: var(--error);">Eliminar cuenta</strong>
+            <p style="color: var(--text-muted); font-size: var(--text-sm);">
+              Una vez eliminada, no podrás recuperar tus compras ni assets.
+            </p>
+          </div>
+          
+          <button class="btn btn-danger" onclick="deleteAccount()">
+            <i class="fas fa-trash"></i> Eliminar cuenta
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../JS/data/games.js"></script>
+  <script src="../JS/data/assets.js"></script>
+  <script src="../JS/data/services.js"></script>
+  <script src="../JS/main.js"></script>
+  
+  <script>
+    // Verificar autenticación
+    function checkAuth() {
+      const saved = localStorage.getItem('germandev_user');
+      if (!saved) {
+        window.location.href = 'Login.html';
+        return false;
+      }
+      return true;
+    }
+    
+    // Cargar datos del usuario
+    function loadUserData() {
+      if (!checkAuth()) return;
+      
+      const saved = localStorage.getItem('germandev_user');
+      const user = JSON.parse(saved);
+      
+      // Sidebar
+      document.getElementById('user-name').textContent = user.username || 'Usuario';
+      document.getElementById('user-email').textContent = user.email || 'email@ejemplo.com';
+      document.getElementById('user-avatar').textContent = (user.username || 'U').charAt(0).toUpperCase();
+      
+      // Profile
+      document.getElementById('profile-avatar').textContent = (user.username || 'U').charAt(0).toUpperCase();
+      document.getElementById('profile-username').value = user.username || '';
+      document.getElementById('profile-email').value = user.email || '';
+      document.getElementById('profile-roblox').value = user.robloxUser || '';
+      
+      // Settings
+      if (user.settings) {
+        document.getElementById('setting-email').checked = user.settings.emailNotifications !== false;
+        document.getElementById('setting-assets').checked = user.settings.newAssetNotifications === true;
+      }
+      
+      // Stats
+      updateStats(user);
+    }
+    
+    // Actualizar estadísticas
+    function updateStats(user) {
+      const purchases = user.purchases || [];
+      const assets = user.assets || [];
+      const totalSpent = purchases.reduce((sum, p) => sum + (p.price || 0), 0);
+      
+      document.getElementById('stat-purchases').textContent = purchases.length;
+      document.getElementById('stat-assets').textContent = assets.length;
+      document.getElementById('stat-spent').textContent = '$' + totalSpent.toFixed(0);
+      document.getElementById('purchases-badge').textContent = purchases.length;
+      
+      // Calcular días de membresía
+      const created = new Date(user.createdAt || Date.now());
+      const now = new Date();
+      const days = Math.floor((now - created) / (1000 * 60 * 60 * 24));
+      document.getElementById('stat-member').textContent = days + 'd';
+    }
+    
+    // Mostrar sección
+    function showSection(sectionId) {
+      document.querySelectorAll('.dashboard-section').forEach(s => {
+        s.style.display = 'none';
+      });
+      
+      const section = document.getElementById('section-' + sectionId);
+      if (section) {
+        section.style.display = 'block';
+      }
+      
+      document.querySelectorAll('.sidebar-menu-link').forEach(l => l.classList.remove('active'));
+      const activeLink = document.querySelector(`[onclick*="showSection('${sectionId}')"]`);
+      if (activeLink) activeLink.classList.add('active');
+      
+      if (window.innerWidth <= 1024) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+    
+    // Toggle sidebar
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+    
+    // Actualizar perfil
+    function updateProfile(e) {
+      e.preventDefault();
+      
+      const saved = localStorage.getItem('germandev_user');
+      if (!saved) return;
+      
+      const user = JSON.parse(saved);
+      user.username = document.getElementById('profile-username').value;
+      user.robloxUser = document.getElementById('profile-roblox').value || null;
+      
+      localStorage.setItem('germandev_user', JSON.stringify(user));
+      
+      if (App && App.toast) {
+        App.toast.success('Perfil actualizado correctamente');
+      }
+      
+      loadUserData();
+    }
+    
+    // Cambiar contraseña
+    function changePassword() {
+      if (App && App.toast) {
+        App.toast.info('Función en desarrollo');
+      }
+    }
+    
+    // Eliminar cuenta
+    function deleteAccount() {
+      if (confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+        localStorage.removeItem('germandev_user');
+        window.location.href = '../index.html';
+      }
+    }
+    
+    // Logout
+    function logout() {
+      localStorage.removeItem('germandev_user');
+      window.location.href = '../index.html';
+    }
+    
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserData();
+    });
+  </script>
+</body>
+</html>

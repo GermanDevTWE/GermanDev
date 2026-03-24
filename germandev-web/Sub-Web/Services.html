@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Servicios de comisión para Roblox - Desarrollo profesional de scripts, sistemas y juegos.">
+  <title>Servicios de Comisión | GermanDev</title>
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%238B5CF6' rx='20' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>G</text></svg>">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/components.css">
+  <link rel="stylesheet" href="../CSS/animations.css">
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+  <link rel="stylesheet" href="../CSS/mobile.css">
+  
+  <style>
+    .services-header { text-align: center; padding: var(--space-16) 0 var(--space-8); }
+    .services-title { font-size: var(--text-4xl); font-weight: 800; margin-bottom: var(--space-4); }
+    .services-description { font-size: var(--text-lg); color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); padding-bottom: var(--space-16); }
+    .pricing-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: var(--space-8); text-align: center; transition: all var(--transition-base); position: relative; }
+    .pricing-card:hover { border-color: var(--border-color-hover); transform: translateY(-5px); box-shadow: var(--shadow-card); }
+    .pricing-card.featured { border-color: var(--primary); transform: scale(1.05); }
+    .pricing-card.featured:hover { transform: scale(1.05) translateY(-5px); }
+    .pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); padding: var(--space-1) var(--space-4); background: var(--gradient-primary); border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; color: white; }
+    .pricing-icon { width: 70px; height: 70px; background: rgba(139, 92, 246, 0.1); border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; font-size: var(--text-3xl); margin: 0 auto var(--space-6); color: var(--primary); }
+    .pricing-name { font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-3); }
+    .pricing-description { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-6); min-height: 40px; }
+    .pricing-price { margin-bottom: var(--space-2); }
+    .pricing-amount { font-size: var(--text-4xl); font-weight: 800; color: var(--primary); }
+    .pricing-currency { font-size: var(--text-sm); color: var(--text-muted); }
+    .pricing-alt { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-4); }
+    .pricing-delivery { display: flex; align-items: center; justify-content: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-6); }
+    .pricing-btn { width: 100%; padding: var(--space-3); }
+    .workflow-section { padding: var(--space-16) 0; background: var(--bg-card); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+    .workflow-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-6); margin-top: var(--space-10); }
+    .workflow-step { text-align: center; position: relative; }
+    .workflow-step:not(:last-child)::after { content: ''; position: absolute; top: 35px; right: -50%; width: 100%; height: 2px; background: var(--border-color); }
+    .workflow-icon { width: 70px; height: 70px; background: rgba(139, 92, 246, 0.1); border: 2px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--text-2xl); margin: 0 auto var(--space-4); position: relative; z-index: 1; color: var(--primary); }
+    .workflow-number { position: absolute; top: -10px; right: -10px; width: 28px; height: 28px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: 700; color: white; }
+    .workflow-title { font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-2); }
+    .workflow-description { font-size: var(--text-sm); color: var(--text-secondary); }
+    .faq-section { padding: var(--space-16) 0; }
+    .faq-grid { display: grid; gap: var(--space-4); max-width: 800px; margin: var(--space-10) auto 0; }
+    .faq-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); overflow: hidden; }
+    .faq-question { display: flex; justify-content: space-between; align-items: center; padding: var(--space-5); cursor: pointer; transition: background var(--transition-fast); }
+    .faq-question:hover { background: rgba(139, 92, 246, 0.05); }
+    .faq-question-text { font-size: var(--text-base); font-weight: 600; }
+    .faq-icon { transition: transform var(--transition-fast); color: var(--text-muted); }
+    .faq-item.active .faq-icon { transform: rotate(180deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height var(--transition-base); }
+    .faq-item.active .faq-answer { max-height: 500px; }
+    .faq-answer-content { padding: 0 var(--space-5) var(--space-5); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.7; }
+    .cta-section { padding: var(--space-16) 0; text-align: center; }
+    .cta-box { background: var(--gradient-primary); border-radius: var(--radius-xl); padding: var(--space-10); max-width: 600px; margin: 0 auto; }
+    .cta-title { font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-4); }
+    .cta-description { margin-bottom: var(--space-6); opacity: 0.9; }
+    .cta-btn { background: white; color: var(--primary); }
+    .cta-btn:hover { background: var(--bg-card); }
+    
+    @media (max-width: 1024px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card.featured { transform: none; order: -1; }
+      .workflow-grid { grid-template-columns: repeat(3, 1fr); }
+      .workflow-step:nth-child(3)::after { display: none; }
+    }
+    
+    @media (max-width: 768px) {
+      .workflow-grid { grid-template-columns: repeat(2, 1fr); }
+      .workflow-step::after { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="preloader">
+    <div class="preloader-logo">
+      <svg viewBox="0 0 100 100">
+        <rect x="10" y="10" width="80" height="80" rx="20" fill="none" stroke="#8B5CF6" stroke-width="3"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#8B5CF6" font-weight="bold">G</text>
+      </svg>
+    </div>
+  </div>
+  
+  <canvas id="particles-canvas"></canvas>
+  
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <div class="brand-logo"><i class="fas fa-gamepad"></i></div>
+        <span class="brand-text">GermanDev</span>
+      </a>
+      
+      <div class="navbar-nav">
+        <a href="../index.html" class="nav-link"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="Proyects.html" class="nav-link"><i class="fas fa-rocket"></i><span>Portfolio</span></a>
+        <a href="Assets.html" class="nav-link"><i class="fas fa-box"></i><span>Assets</span></a>
+        <a href="Services.html" class="nav-link active"><i class="fas fa-briefcase"></i><span>Servicios</span></a>
+      </div>
+      
+      <div class="navbar-actions">
+        <button class="cart-btn" aria-label="Carrito">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" style="display: none;">0</span>
+        </button>
+        <button class="auth-btn" id="auth-btn" onclick="goToAuth()">
+          <i class="fas fa-user"></i>
+          <span id="auth-text">Iniciar sesión</span>
+        </button>
+        <div class="user-avatar" id="user-avatar" style="display: none;"></div>
+        <button class="menu-toggle" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="mobile-menu-overlay">
+    <div class="mobile-menu">
+      <div class="mobile-menu-header">
+        <a href="../index.html" class="navbar-brand">
+          <div class="brand-logo"><i class="fas fa-gamepad"></i></div>
+          <span class="brand-text">GermanDev</span>
+        </a>
+        <button class="mobile-menu-close"><i class="fas fa-times"></i></button>
+      </div>
+      <nav class="mobile-nav">
+        <a href="../index.html" class="mobile-nav-link"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="Proyects.html" class="mobile-nav-link"><i class="fas fa-rocket"></i><span>Portfolio</span></a>
+        <a href="Assets.html" class="mobile-nav-link"><i class="fas fa-box"></i><span>Assets</span></a>
+        <a href="Services.html" class="mobile-nav-link active"><i class="fas fa-briefcase"></i><span>Servicios</span></a>
+      </nav>
+    </div>
+  </div>
+  
+  <div class="cart-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 299; opacity: 0; visibility: hidden; transition: all 0.3s;"></div>
+  <div class="cart-sidebar">
+    <div class="cart-header">
+      <h3 class="cart-title"><i class="fas fa-shopping-cart"></i> Tu Carrito</h3>
+      <button class="cart-close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span class="cart-total-label">Total:</span>
+        <span class="cart-total-value">$0.00</span>
+      </div>
+      <button class="btn btn-primary cart-checkout">
+        <i class="fas fa-credit-card"></i> Proceder al pago
+      </button>
+    </div>
+  </div>
+  
+  <main class="main-wrapper">
+    <div class="container">
+      <div class="services-header">
+        <h1 class="services-title">Servicios de Comisión</h1>
+        <p class="services-description">
+          ¿Necesitas algo personalizado para tu juego de Roblox? Ofrezco servicios de programación 
+          profesional con diferentes niveles según tus necesidades.
+        </p>
+      </div>
+      
+      <div class="pricing-grid" id="pricing-container">
+        
+        <div class="pricing-card" style="animation: fadeInUp 0.5s ease 0s both;">
+          <div class="pricing-icon"><i class="fas fa-star"></i></div>
+          <h3 class="pricing-name">Básico</h3>
+          <p class="pricing-description">Perfecto para proyectos pequeños o mejoras simples</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">$5</span>
+            <span class="pricing-currency">USD</span>
+          </div>
+          <p class="pricing-alt">o 1,500 Robux</p>
+          <div class="pricing-delivery">
+            <i class="fas fa-clock"></i>
+            <span>Entrega: 3-5 días</span>
+          </div>
+          <ul style="text-align: left; margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem; padding-left: 1.5rem;">
+            <li>1 script simple</li>
+            <li>Corrección de bugs</li>
+            <li>Optimización básica</li>
+            <li>1 revisión incluida</li>
+            <li>Soporte por Discord</li>
+          </ul>
+          <button class="btn btn-outline pricing-btn" onclick="hireManualService('Básico', '5.00')">
+            <i class="fas fa-paper-plane"></i> Contratar
+          </button>
+        </div>
+
+        <div class="pricing-card featured" style="animation: fadeInUp 0.5s ease 0.1s both;">
+          <span class="pricing-badge">Más Popular</span>
+          <div class="pricing-icon"><i class="fas fa-gem"></i></div>
+          <h3 class="pricing-name">Estándar</h3>
+          <p class="pricing-description">Ideal para la mayoría de proyectos de Roblox</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">$15</span>
+            <span class="pricing-currency">USD</span>
+          </div>
+          <p class="pricing-alt">o 4,500 Robux</p>
+          <div class="pricing-delivery">
+            <i class="fas fa-clock"></i>
+            <span>Entrega: 7-10 días</span>
+          </div>
+          <ul style="text-align: left; margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem; padding-left: 1.5rem;">
+            <li>Sistema completo</li>
+            <li>UI/UX personalizado</li>
+            <li>Hasta 3 revisiones</li>
+            <li>Documentación incluida</li>
+            <li>Soporte prioritario</li>
+            <li>Código comentado</li>
+          </ul>
+          <button class="btn btn-primary pricing-btn" onclick="hireManualService('Estándar', '15.00')">
+            <i class="fas fa-paper-plane"></i> Contratar
+          </button>
+        </div>
+
+        <div class="pricing-card" style="animation: fadeInUp 0.5s ease 0.2s both;">
+          <div class="pricing-icon"><i class="fas fa-crown"></i></div>
+          <h3 class="pricing-name">Premium</h3>
+          <p class="pricing-description">Para proyectos ambiciosos que necesitan lo mejor</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">$50</span>
+            <span class="pricing-currency">USD</span>
+          </div>
+          <p class="pricing-alt">o 15,000 Robux</p>
+          <div class="pricing-delivery">
+            <i class="fas fa-clock"></i>
+            <span>Entrega: 15-20 días</span>
+          </div>
+          <ul style="text-align: left; margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem; padding-left: 1.5rem;">
+            <li>Proyecto completo</li>
+            <li>Sistemas avanzados</li>
+            <li>UI/UX premium</li>
+            <li>Revisiones ilimitadas</li>
+            <li>Soporte 24/7</li>
+            <li>Código optimizado</li>
+            <li>Modelos 3D básicos</li>
+            <li>Guía de implementación</li>
+          </ul>
+          <button class="btn btn-outline pricing-btn" onclick="hireManualService('Premium', '50.00')">
+            <i class="fas fa-paper-plane"></i> Contratar
+          </button>
+        </div>
+
+      </div>
+    </div>
+    
+    <section class="workflow-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">¿Cómo funciona?</h2>
+          <p class="section-subtitle">
+            Un proceso simple y transparente para llevar tu proyecto a la realidad.
+          </p>
+        </div>
+        
+        <div class="workflow-grid" id="workflow-container">
+          
+          <div class="workflow-step" style="animation: fadeInUp 0.5s ease 0s both;">
+            <div class="workflow-icon">
+              <span class="workflow-number">1</span>
+              <i class="fas fa-comments"></i>
+            </div>
+            <h4 class="workflow-title">Consulta</h4>
+            <p class="workflow-description">Discutimos tus necesidades y objetivos</p>
+          </div>
+          
+          <div class="workflow-step" style="animation: fadeInUp 0.5s ease 0.1s both;">
+            <div class="workflow-icon">
+              <span class="workflow-number">2</span>
+              <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <h4 class="workflow-title">Presupuesto</h4>
+            <p class="workflow-description">Recibes un presupuesto detallado</p>
+          </div>
+          
+          <div class="workflow-step" style="animation: fadeInUp 0.5s ease 0.2s both;">
+            <div class="workflow-icon">
+              <span class="workflow-number">3</span>
+              <i class="fas fa-code"></i>
+            </div>
+            <h4 class="workflow-title">Desarrollo</h4>
+            <p class="workflow-description">Comienzo a trabajar en tu proyecto</p>
+          </div>
+
+          <div class="workflow-step" style="animation: fadeInUp 0.5s ease 0.3s both;">
+            <div class="workflow-icon">
+              <span class="workflow-number">4</span>
+              <i class="fas fa-sync"></i>
+            </div>
+            <h4 class="workflow-title">Revisiones</h4>
+            <p class="workflow-description">Iteramos según tus comentarios</p>
+          </div>
+
+          <div class="workflow-step" style="animation: fadeInUp 0.5s ease 0.4s both;">
+            <div class="workflow-icon">
+              <span class="workflow-number">5</span>
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h4 class="workflow-title">Entrega</h4>
+            <p class="workflow-description">Recibes el proyecto completo</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    
+    <section class="faq-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Preguntas Frecuentes</h2>
+          <p class="section-subtitle">
+            Respuestas a las dudas más comunes sobre mis servicios.
+          </p>
+        </div>
+        
+        <div class="faq-grid" id="faq-container">
+          
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(0)">
+              <span class="faq-question-text">¿Cómo funciona el proceso de comisión?</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-content">Primero me contactas con los detalles de tu proyecto. Evalúo el alcance y te envío un presupuesto. Una vez aceptado, comienzo el desarrollo con actualizaciones regulares.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(1)">
+              <span class="faq-question-text">¿Qué métodos de pago aceptas?</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-content">Acepto PayPal, transferencia bancaria y Robux. Para proyectos grandes, podemos dividir el pago en milestones.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(2)">
+              <span class="faq-question-text">¿Cuánto tiempo toma completar un proyecto?</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-content">Depende de la complejidad. Un script simple puede tomar 2-3 días, mientras que un proyecto completo puede tomar 2-3 semanas.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(3)">
+              <span class="faq-question-text">¿Ofreces soporte después de la entrega?</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-content">Sí, ofrezco soporte gratuito por 30 días después de la entrega para corregir cualquier bug o problema.</div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(4)">
+              <span class="faq-question-text">¿Puedo ver ejemplos de tu trabajo?</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-content">¡Por supuesto! Visita la sección de Portfolio para ver mis proyectos publicados o contáctame para ver demos privadas.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2 class="cta-title">¿Listo para comenzar?</h2>
+          <p class="cta-description">
+            Contáctame ahora y conversemos sobre tu proyecto. ¡La primera consulta es gratuita!
+          </p>
+          <button class="btn cta-btn" onclick="copyDiscord()">
+            <i class="fab fa-discord"></i> Contactar por Discord
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="brand-logo"><i class="fas fa-gamepad"></i></div>
+            <span class="brand-text">GermanDev</span>
+          </div>
+          <p class="footer-description">
+            Desarrollador de juegos y assets para Roblox. Llevando tus ideas al 
+            siguiente nivel con código limpio y diseño profesional.
+          </p>
+          <div class="footer-social">
+            <a href="#" class="social-link" data-copy="GermanDev#1234"><i class="fab fa-discord"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4 class="footer-title">Navegación</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="Proyects.html">Portfolio</a></li>
+            <li><a href="Assets.html">Assets</a></li>
+            <li><a href="Services.html">Servicios</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-nav">
+          <h4 class="footer-title">Soporte</h4>
+          <ul class="footer-links">
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#" data-copy="contact@germandev.com">Contacto</a></li>
+            <li><a href="#">Reportar bug</a></li>
+            <li><a href="#">Sugerencias</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-nav">
+          <h4 class="footer-title">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#" data-modal="terms">Términos de uso</a></li>
+            <li><a href="#" data-modal="privacy">Política de privacidad</a></li>
+            <li><a href="#" data-modal="refunds">Política de reembolso</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p class="footer-copyright">&copy; 2024 GermanDev. Todos los derechos reservados.</p>
+        <div class="footer-legal">
+          <a href="#" data-modal="terms">Términos</a>
+          <a href="#" data-modal="privacy">Privacidad</a>
+          <a href="#" data-modal="refunds">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="../JS/main.js"></script>
+  
+  <script>
+    // Función para ir a login o dashboard
+    function goToAuth() {
+      if (typeof App !== 'undefined' && App.auth && App.auth.isAuthenticated) {
+        window.location.href = 'Dashboard.html';
+      } else {
+        window.location.href = 'Login.html';
+      }
+    }
+    
+    // Actualizar UI del botón de auth
+    function updateAuthButton() {
+      const authBtn = document.getElementById('auth-btn');
+      const authText = document.getElementById('auth-text');
+      const userAvatar = document.getElementById('user-avatar');
+      
+      if (typeof App !== 'undefined' && App.auth && App.auth.isAuthenticated && App.auth.currentUser) {
+        if (authBtn) authBtn.style.display = 'none';
+        if (userAvatar) {
+          userAvatar.style.display = 'flex';
+          userAvatar.textContent = App.auth.currentUser.username.charAt(0).toUpperCase();
+          userAvatar.onclick = () => window.location.href = 'Dashboard.html';
+        }
+      } else {
+        if (authBtn) {
+          authBtn.style.display = 'flex';
+          authText.textContent = 'Iniciar sesión';
+        }
+        if (userAvatar) userAvatar.style.display = 'none';
+      }
+    }
+    
+    // Copiar Discord
+    function copyDiscord() {
+      if (typeof Utils !== 'undefined' && Utils.copyToClipboard) {
+        Utils.copyToClipboard('GermanDev#1234').then(() => {
+          App.toast.success('Discord copiado al portapapeles');
+        });
+      } else {
+        navigator.clipboard.writeText('GermanDev#1234');
+        alert('Discord copiado: GermanDev#1234');
+      }
+    }
+
+    // Toggle FAQ
+    function toggleFAQ(index) {
+      const items = document.querySelectorAll('.faq-item');
+      const item = items[index];
+      const isActive = item.classList.contains('active');
+      
+      items.forEach(i => i.classList.remove('active'));
+      
+      if (!isActive) {
+        item.classList.add('active');
+      }
+    }
+    
+    // Contratar servicio (Versión Manual sin usar DB)
+    function hireManualService(name, price) {
+      if (typeof App === 'undefined' || !App.modal) {
+        alert(`Contactar por el plan ${name} ($${price}). Mi discord es: GermanDev#1234`);
+        return;
+      }
+
+      if (!App.auth.isAuthenticated) {
+        App.toast.warning('Inicia sesión para contratar servicios');
+        setTimeout(() => {
+          window.location.href = 'Login.html';
+        }, 1500);
+        return;
+      }
+      
+      App.modal.open(`
+        <div style="text-align: center;">
+          <i class="fas fa-paper-plane" style="font-size: 48px; color: var(--primary); margin-bottom: 1rem;"></i>
+          <h4>Contratar Plan ${name}</h4>
+          <p style="color: var(--text-secondary); margin: 1rem 0;">
+            Has seleccionado el plan <strong>${name}</strong> por <strong>$${price} USD</strong>.
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">
+            Contáctame por Discord para discutir los detalles de tu proyecto.
+          </p>
+          <button class="btn btn-primary" onclick="copyDiscord(); App.modal.close();">
+            <i class="fab fa-discord"></i> Copiar Discord
+          </button>
+        </div>
+      `, { title: 'Contratar Servicio' });
+    }
+    
+    // Inicializar botones y estados cuando cargue la página
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAuthButton();
+    });
+  </script>
+</body>
+</html>

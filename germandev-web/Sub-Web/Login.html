@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Iniciar sesión en GermanDev - Accede a tu cuenta.">
+  <title>Iniciar Sesión | GermanDev</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%238B5CF6' rx='20' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>G</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/components.css">
+  <link rel="stylesheet" href="../CSS/animations.css">
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+  <link rel="stylesheet" href="../CSS/mobile.css">
+  
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8);
+      padding-top: 90px;
+    }
+    
+    .auth-container {
+      width: 100%;
+      max-width: 450px;
+    }
+    
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    
+    .auth-logo {
+      width: 70px;
+      height: 70px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-3xl);
+      margin: 0 auto var(--space-5);
+      box-shadow: 0 0 30px var(--primary-glow);
+    }
+    
+    .auth-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+    }
+    
+    .auth-subtitle {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .auth-tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+      background: var(--bg-input);
+      border-radius: var(--radius-lg);
+      padding: var(--space-1);
+    }
+    
+    .auth-tab {
+      flex: 1;
+      padding: var(--space-3);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .auth-tab.active {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .auth-form {
+      display: none;
+    }
+    
+    .auth-form.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: var(--space-5);
+    }
+    
+    .form-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .form-label-required::after {
+      content: ' *';
+      color: var(--error);
+    }
+    
+    .form-input-wrapper {
+      position: relative;
+    }
+    
+    .form-input-icon {
+      position: absolute;
+      left: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      padding-left: var(--space-10);
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .form-input-action {
+      position: absolute;
+      right: var(--space-3);
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+    
+    .form-input-action:hover {
+      color: var(--primary);
+    }
+    
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-5);
+    }
+    
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      cursor: pointer;
+    }
+    
+    .form-check-input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+    
+    .form-check-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .form-link {
+      font-size: var(--text-sm);
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .form-link:hover {
+      text-decoration: underline;
+    }
+    
+    .btn-submit {
+      width: 100%;
+      padding: var(--space-4);
+      font-size: var(--text-base);
+    }
+    
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+    
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+    
+    .social-login {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    
+    .btn-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .btn-social:hover {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.1);
+    }
+    
+    .btn-social.discord {
+      color: #5865F2;
+    }
+    
+    .btn-social.google {
+      color: #EA4335;
+    }
+    
+    .password-strength {
+      margin-top: var(--space-3);
+    }
+    
+    .password-strength-bar {
+      height: 4px;
+      background: var(--bg-input);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .password-strength-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: all var(--transition-base);
+      width: 0;
+    }
+    
+    .password-strength-fill.weak {
+      width: 33%;
+      background: var(--error);
+    }
+    
+    .password-strength-fill.medium {
+      width: 66%;
+      background: var(--warning);
+    }
+    
+    .password-strength-fill.strong {
+      width: 100%;
+      background: var(--success);
+    }
+    
+    .password-strength-text {
+      font-size: var(--text-xs);
+      margin-top: var(--space-2);
+    }
+    
+    .password-requirements {
+      margin-top: var(--space-3);
+      padding: var(--space-3);
+      background: var(--bg-input);
+      border-radius: var(--radius-md);
+    }
+    
+    .password-requirement {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-1);
+    }
+    
+    .password-requirement.met {
+      color: var(--success);
+    }
+    
+    .password-requirement i {
+      font-size: 10px;
+    }
+    
+    .form-error {
+      color: var(--error);
+      font-size: var(--text-xs);
+      margin-top: var(--space-2);
+      display: none;
+    }
+    
+    .form-error.visible {
+      display: block;
+    }
+    
+    .form-input.error {
+      border-color: var(--error);
+    }
+  </style>
+</head>
+<body>
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="preloader-logo">
+      <svg viewBox="0 0 100 100">
+        <rect x="10" y="10" width="80" height="80" rx="20" fill="none" stroke="#8B5CF6" stroke-width="3"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#8B5CF6" font-weight="bold">G</text>
+      </svg>
+    </div>
+  </div>
+  
+  <!-- Particles Canvas -->
+  <canvas id="particles-canvas"></canvas>
+  
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <div class="brand-logo">
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <span class="brand-text">GermanDev</span>
+      </a>
+      
+      <div class="navbar-nav">
+        <a href="../index.html" class="nav-link">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+        <a href="Proyects.html" class="nav-link">
+          <i class="fas fa-rocket"></i>
+          <span>Portfolio</span>
+        </a>
+        <a href="Assets.html" class="nav-link">
+          <i class="fas fa-box"></i>
+          <span>Assets</span>
+        </a>
+        <a href="Services.html" class="nav-link">
+          <i class="fas fa-briefcase"></i>
+          <span>Servicios</span>
+        </a>
+      </div>
+      
+      <div class="navbar-actions">
+        <button class="cart-btn" aria-label="Carrito">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" style="display: none;">0</span>
+        </button>
+        
+        <button class="menu-toggle" aria-label="Menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay">
+    <div class="mobile-menu">
+      <div class="mobile-menu-header">
+        <a href="../index.html" class="navbar-brand">
+          <div class="brand-logo">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <span class="brand-text">GermanDev</span>
+        </a>
+        <button class="mobile-menu-close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <nav class="mobile-nav">
+        <a href="../index.html" class="mobile-nav-link">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+        <a href="Proyects.html" class="mobile-nav-link">
+          <i class="fas fa-rocket"></i>
+          <span>Portfolio</span>
+        </a>
+        <a href="Assets.html" class="mobile-nav-link">
+          <i class="fas fa-box"></i>
+          <span>Assets</span>
+        </a>
+        <a href="Services.html" class="mobile-nav-link">
+          <i class="fas fa-briefcase"></i>
+          <span>Servicios</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+  
+  <!-- Auth Page -->
+  <main class="auth-page">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <h1 class="auth-title">Bienvenido</h1>
+          <p class="auth-subtitle">Inicia sesión o crea una cuenta para continuar</p>
+        </div>
+        
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchTab('login')">Iniciar sesión</button>
+          <button class="auth-tab" onclick="switchTab('register')">Registrarse</button>
+        </div>
+        
+        <!-- Login Form -->
+        <form class="auth-form active" id="login-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label form-label-required">Email</label>
+            <div class="form-input-wrapper">
+              <i class="fas fa-envelope form-input-icon"></i>
+              <input type="email" class="form-input" id="login-email" placeholder="ejemplo@correo.com" required>
+            </div>
+            <span class="form-error" id="login-email-error">Email inválido</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label form-label-required">Contraseña</label>
+            <div class="form-input-wrapper">
+              <i class="fas fa-lock form-input-icon"></i>
+              <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+              <button type="button" class="form-input-action" onclick="togglePassword('login-password')">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <span class="form-error" id="login-password-error">Contraseña incorrecta</span>
+          </div>
+          
+          <div class="form-options">
+            <label class="form-check">
+              <input type="checkbox" class="form-check-input">
+              <span class="form-check-label">Recordarme</span>
+            </label>
+            <a href="#" class="form-link">¿Olvidaste?</a>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+          </button>
+        </form>
+        
+        <!-- Register Form -->
+        <form class="auth-form" id="register-form" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label class="form-label form-label-required">Email</label>
+            <div class="form-input-wrapper">
+              <i class="fas fa-envelope form-input-icon"></i>
+              <input type="email" class="form-input" id="register-email" placeholder="ejemplo@correo.com" required>
+            </div>
+            <span class="form-error" id="register-email-error">Email inválido</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Usuario de Roblox (opcional)</label>
+            <div class="form-input-wrapper">
+              <i class="fas fa-user form-input-icon"></i>
+              <input type="text" class="form-input" id="register-roblox" placeholder="@usuario">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label form-label-required">Contraseña</label>
+            <div class="form-input-wrapper">
+              <i class="fas fa-lock form-input-icon"></i>
+              <input type="password" class="form-input" id="register-password" placeholder="••••••••" required oninput="checkPasswordStrength()">
+              <button type="button" class="form-input-action" onclick="togglePassword('register-password')">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-bar">
+                <div class="password-strength-fill" id="strength-fill"></div>
+              </div>
+              <span class="password-strength-text" id="strength-text"></span>
+            </div>
+            <div class="password-requirements">
+              <div class="password-requirement" id="req-length">
+                <i class="fas fa-circle"></i> Mínimo 8 caracteres
+              </div>
+              <div class="password-requirement" id="req-upper">
+                <i class="fas fa-circle"></i> Una mayúscula
+              </div>
+              <div class="password-requirement" id="req-lower">
+                <i class="fas fa-circle"></i> Una minúscula
+              </div>
+              <div class="password-requirement" id="req-number">
+                <i class="fas fa-circle"></i> Un número
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label form-label-required">Confirmar contraseña</label>
+            <div class="form-input-wrapper">
+              <i class="fas fa-lock form-input-icon"></i>
+              <input type="password" class="form-input" id="register-confirm" placeholder="••••••••" required>
+              <button type="button" class="form-input-action" onclick="togglePassword('register-confirm')">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <span class="form-error" id="register-confirm-error">Las contraseñas no coinciden</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" class="form-check-input" id="register-terms" required>
+              <span class="form-check-label">
+                Acepto los <a href="#" data-modal="terms">Términos de uso</a> y la 
+                <a href="#" data-modal="privacy">Política de privacidad</a> *
+              </span>
+            </label>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fas fa-user-plus"></i> Crear cuenta
+          </button>
+        </form>
+        
+        <div class="auth-divider">o continúa con</div>
+        
+        <div class="social-login">
+          <button class="btn-social discord" onclick="socialLogin('discord')">
+            <i class="fab fa-discord"></i> Discord
+          </button>
+          <button class="btn-social google" onclick="socialLogin('google')">
+            <i class="fab fa-google"></i> Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Scripts -->
+  <script src="../JS/data/games.js"></script>
+  <script src="../JS/data/assets.js"></script>
+  <script src="../JS/data/services.js"></script>
+  <script src="../JS/main.js"></script>
+  
+  <script>
+    // Cambiar entre tabs
+    function switchTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tab + '-form').classList.add('active');
+    }
+    
+    // Toggle password visibility
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const button = input.nextElementSibling;
+      const icon = button.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+    
+    // Check password strength
+    function checkPasswordStrength() {
+      const password = document.getElementById('register-password').value;
+      
+      const hasLength = password.length >= 8;
+      const hasUpper = /[A-Z]/.test(password);
+      const hasLower = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      
+      document.getElementById('req-length').classList.toggle('met', hasLength);
+      document.getElementById('req-upper').classList.toggle('met', hasUpper);
+      document.getElementById('req-lower').classList.toggle('met', hasLower);
+      document.getElementById('req-number').classList.toggle('met', hasNumber);
+      
+      const fill = document.getElementById('strength-fill');
+      const text = document.getElementById('strength-text');
+      
+      const metCount = [hasLength, hasUpper, hasLower, hasNumber].filter(Boolean).length;
+      fill.className = 'password-strength-fill';
+      
+      if (password.length === 0) {
+        text.textContent = '';
+      } else if (metCount <= 2) {
+        fill.classList.add('weak');
+        text.textContent = 'Contraseña débil';
+        text.style.color = 'var(--error)';
+      } else if (metCount === 3) {
+        fill.classList.add('medium');
+        text.textContent = 'Contraseña media';
+        text.style.color = 'var(--warning)';
+      } else {
+        fill.classList.add('strong');
+        text.textContent = 'Contraseña fuerte';
+        text.style.color = 'var(--success)';
+      }
+    }
+    
+    // Validar email
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    
+    // Handle login
+    function handleLogin(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      if (!email || !password) {
+        App.toast.error('Completa todos los campos');
+        return;
+      }
+      
+      // Simular login exitoso
+      const user = {
+        id: 'user_' + Date.now(),
+        username: email.split('@')[0],
+        email: email,
+        robloxUser: null,
+        createdAt: new Date().toISOString(),
+        purchases: [],
+        assets: [],
+        settings: {
+          emailNotifications: true,
+          newAssetNotifications: false
+        }
+      };
+      
+      localStorage.setItem('germandev_user', JSON.stringify(user));
+      App.auth.currentUser = user;
+      App.auth.isAuthenticated = true;
+      
+      App.toast.success('¡Bienvenido de vuelta!');
+      
+      setTimeout(() => {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        
+        // Fix: Si el redirect contiene Sub-Web/Sub-Web, corregirlo
+        if (redirect && redirect.includes('Sub-Web/Sub-Web')) {
+          window.location.href = redirect.replace('Sub-Web/Sub-Web/', 'Sub-Web/');
+        } else if (redirect) {
+          window.location.href = redirect;
+        } else {
+          window.location.href = 'Dashboard.html';
+        }
+      }, 1000);
+    }
+    
+    // Handle register
+    function handleRegister(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('register-email').value;
+      const robloxUser = document.getElementById('register-roblox').value;
+      const password = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-confirm').value;
+      const terms = document.getElementById('register-terms').checked;
+      
+      if (!email || !password || !confirm) {
+        App.toast.error('Completa todos los campos requeridos');
+        return;
+      }
+      
+      if (!isValidEmail(email)) {
+        document.getElementById('register-email').classList.add('error');
+        document.getElementById('register-email-error').classList.add('visible');
+        return;
+      }
+      
+      const hasLength = password.length >= 8;
+      const hasUpper = /[A-Z]/.test(password);
+      const hasLower = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      
+      if (!hasLength || !hasUpper || !hasLower || !hasNumber) {
+        App.toast.error('La contraseña no cumple los requisitos');
+        return;
+      }
+      
+      if (password !== confirm) {
+        document.getElementById('register-confirm').classList.add('error');
+        document.getElementById('register-confirm-error').classList.add('visible');
+        return;
+      }
+      
+      if (!terms) {
+        App.toast.error('Debes aceptar los términos y condiciones');
+        return;
+      }
+      
+      // Crear cuenta
+      const user = {
+        id: 'user_' + Date.now(),
+        username: email.split('@')[0],
+        email: email,
+        robloxUser: robloxUser || null,
+        createdAt: new Date().toISOString(),
+        purchases: [],
+        assets: [],
+        settings: {
+          emailNotifications: true,
+          newAssetNotifications: false
+        }
+      };
+      
+      localStorage.setItem('germandev_user', JSON.stringify(user));
+      App.auth.currentUser = user;
+      App.auth.isAuthenticated = true;
+      
+      App.toast.success('¡Cuenta creada exitosamente!');
+      
+      setTimeout(() => {
+        window.location.href = 'Dashboard.html';
+      }, 1500);
+    }
+    
+    // Social login
+    function socialLogin(provider) {
+      App.toast.info(`Iniciando sesión con ${provider}...`);
+      
+      setTimeout(() => {
+        const user = {
+          id: 'user_' + Date.now(),
+          username: `User${Math.floor(Math.random() * 10000)}`,
+          email: `user_${Date.now()}@${provider}.com`,
+          robloxUser: null,
+          createdAt: new Date().toISOString(),
+          purchases: [],
+          assets: [],
+          settings: {
+            emailNotifications: true,
+            newAssetNotifications: false
+          }
+        };
+        
+        localStorage.setItem('germandev_user', JSON.stringify(user));
+        App.auth.currentUser = user;
+        App.auth.isAuthenticated = true;
+        
+        App.toast.success('¡Inicio de sesión exitoso!');
+        setTimeout(() => {
+          window.location.href = 'Dashboard.html';
+        }, 1000);
+      }, 1500);
+    }
+    
+    // Limpiar errores al escribir
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('error');
+        const error = document.getElementById(input.id + '-error');
+        if (error) error.classList.remove('visible');
+      });
+    });
+  </script>
+</body>
+</html>

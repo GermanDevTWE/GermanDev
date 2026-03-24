@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tienda de assets premium para Roblox - Scripts, UI, sistemas y modelos 3D.">
+  <title>Tienda de Assets | GermanDev</title>
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%238B5CF6' rx='20' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>G</text></svg>">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/components.css">
+  <link rel="stylesheet" href="../CSS/animations.css">
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+  <link rel="stylesheet" href="../CSS/mobile.css">
+  
+  <style>
+    .assets-header { padding: var(--space-16) 0 var(--space-8); }
+    .assets-title { font-size: var(--text-4xl); font-weight: 800; margin-bottom: var(--space-4); }
+    .assets-description { font-size: var(--text-lg); color: var(--text-secondary); max-width: 700px; }
+    .filters-bar { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; padding: var(--space-5); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); margin-bottom: var(--space-8); }
+    .filter-search { position: relative; flex: 1; min-width: 250px; }
+    .filter-search input { width: 100%; padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10); background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-lg); color: var(--text-primary); font-size: var(--text-sm); }
+    .filter-search input:focus { outline: none; border-color: var(--primary); }
+    .filter-search i { position: absolute; left: var(--space-4); top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .filter-tabs { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+    .filter-tab { padding: var(--space-2) var(--space-4); background: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-secondary); font-size: var(--text-sm); cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; gap: var(--space-2); }
+    .filter-tab:hover { border-color: var(--primary); color: var(--text-primary); }
+    .filter-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .assets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); padding-bottom: var(--space-16); }
+    .asset-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); overflow: hidden; transition: all var(--transition-base); }
+    .asset-card:hover { border-color: var(--border-color-hover); transform: translateY(-5px); box-shadow: var(--shadow-card); }
+    .asset-card-image { position: relative; height: 180px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .asset-card-icon { font-size: 60px; color: var(--primary); opacity: 0.7; }
+    .asset-card-category { position: absolute; top: var(--space-3); left: var(--space-3); padding: var(--space-1) var(--space-3); background: var(--primary); border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; color: white; }
+    .asset-card-content { padding: var(--space-5); }
+    .asset-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-3); }
+    .asset-card-title { font-size: var(--text-lg); font-weight: 700; flex: 1; }
+    .asset-card-rating { display: flex; align-items: center; gap: var(--space-1); font-size: var(--text-xs); color: var(--warning); }
+    .asset-card-description { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4); line-height: 1.5; }
+    .asset-card-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+    .asset-tag { padding: var(--space-1) var(--space-2); background: var(--bg-input); border-radius: var(--radius-sm); font-size: var(--text-xs); color: var(--text-muted); }
+    .asset-card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: var(--space-4); border-top: 1px solid var(--border-color); }
+    .asset-price { display: flex; flex-direction: column; }
+    .asset-price-value { font-size: var(--text-xl); font-weight: 800; color: var(--primary); }
+    .asset-price-currency { font-size: var(--text-xs); color: var(--text-muted); }
+    .asset-add-cart { width: 44px; height: 44px; background: var(--gradient-primary); border: none; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: all var(--transition-fast); }
+    .asset-add-cart:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--primary-glow); }
+    .no-results { grid-column: 1 / -1; text-align: center; padding: var(--space-16); display: none; }
+    .no-results-icon { font-size: 64px; color: var(--text-muted); margin-bottom: var(--space-4); opacity: 0.5; }
+    .no-results-title { font-size: var(--text-xl); font-weight: 600; margin-bottom: var(--space-2); }
+    .no-results-description { color: var(--text-secondary); }
+    
+    @media (max-width: 768px) {
+      .assets-grid { grid-template-columns: 1fr; }
+      .filter-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .filter-tabs::-webkit-scrollbar { display: none; }
+      .filter-tab { flex-shrink: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="preloader">
+    <div class="preloader-logo">
+      <svg viewBox="0 0 100 100">
+        <rect x="10" y="10" width="80" height="80" rx="20" fill="none" stroke="#8B5CF6" stroke-width="3"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#8B5CF6" font-weight="bold">G</text>
+      </svg>
+    </div>
+  </div>
+  
+  <canvas id="particles-canvas"></canvas>
+  
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <div class="brand-logo"><i class="fas fa-gamepad"></i></div>
+        <span class="brand-text">GermanDev</span>
+      </a>
+      
+      <div class="navbar-nav">
+        <a href="../index.html" class="nav-link"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="Proyects.html" class="nav-link"><i class="fas fa-rocket"></i><span>Portfolio</span></a>
+        <a href="Assets.html" class="nav-link active"><i class="fas fa-box"></i><span>Assets</span></a>
+        <a href="Services.html" class="nav-link"><i class="fas fa-briefcase"></i><span>Servicios</span></a>
+      </div>
+      
+      <div class="navbar-actions">
+        <button class="cart-btn" aria-label="Carrito">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" style="display: none;">0</span>
+        </button>
+        <button class="auth-btn" id="auth-btn" onclick="goToAuth()">
+          <i class="fas fa-user"></i>
+          <span id="auth-text">Iniciar sesión</span>
+        </button>
+        <div class="user-avatar" id="user-avatar" style="display: none;"></div>
+        <button class="menu-toggle" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="mobile-menu-overlay">
+    <div class="mobile-menu">
+      <div class="mobile-menu-header">
+        <a href="../index.html" class="navbar-brand">
+          <div class="brand-logo"><i class="fas fa-gamepad"></i></div>
+          <span class="brand-text">GermanDev</span>
+        </a>
+        <button class="mobile-menu-close"><i class="fas fa-times"></i></button>
+      </div>
+      <nav class="mobile-nav">
+        <a href="../index.html" class="mobile-nav-link"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="Proyects.html" class="mobile-nav-link"><i class="fas fa-rocket"></i><span>Portfolio</span></a>
+        <a href="Assets.html" class="mobile-nav-link active"><i class="fas fa-box"></i><span>Assets</span></a>
+        <a href="Services.html" class="mobile-nav-link"><i class="fas fa-briefcase"></i><span>Servicios</span></a>
+      </nav>
+    </div>
+  </div>
+  
+  <div class="cart-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 299; opacity: 0; visibility: hidden; transition: all 0.3s;"></div>
+  <div class="cart-sidebar">
+    <div class="cart-header">
+      <h3 class="cart-title"><i class="fas fa-shopping-cart"></i> Tu Carrito</h3>
+      <button class="cart-close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span class="cart-total-label">Total:</span>
+        <span class="cart-total-value">$0.00</span>
+      </div>
+      <button class="btn btn-primary cart-checkout">
+        <i class="fas fa-credit-card"></i> Proceder al pago
+      </button>
+    </div>
+  </div>
+  
+  <main class="main-wrapper">
+    <div class="container">
+      <div class="assets-header">
+        <h1 class="assets-title">Tienda de Assets</h1>
+        <p class="assets-description">
+          Scripts, UI, sistemas y modelos 3D profesionales para tus proyectos de Roblox. 
+          Todo listo para usar y con soporte incluido.
+        </p>
+      </div>
+      
+      <div class="filters-bar">
+        <div class="filter-search">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search-input" placeholder="Buscar assets por nombre, descripción o tags...">
+        </div>
+        
+        <div class="filter-tabs" id="category-filters">
+          <button class="filter-tab active" data-category="all"><i class="fas fa-layer-group"></i> Todos</button>
+          <button class="filter-tab" data-category="ui"><i class="fas fa-desktop"></i> UI</button>
+          <button class="filter-tab" data-category="scripts"><i class="fas fa-code"></i> Scripts</button>
+          <button class="filter-tab" data-category="systems"><i class="fas fa-cogs"></i> Sistemas</button>
+          <button class="filter-tab" data-category="models"><i class="fas fa-cube"></i> Modelos</button>
+          <button class="filter-tab" data-category="packs"><i class="fas fa-box-open"></i> Packs</button>
+          <button class="filter-tab" data-category="animations"><i class="fas fa-running"></i> Animaciones</button>
+        </div>
+      </div>
+      
+      <div class="assets-grid" id="assets-container">
+        
+        <div class="asset-card" data-category="packs">
+          <div class="asset-card-image">
+            <i class="fas fa-dungeon asset-card-icon"></i>
+            <span class="asset-card-category">Packs</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Starter Pack RPG</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>5.0</span></div>
+            </div>
+            <p class="asset-card-description">Pack completo para juegos RPG con sistemas de niveles, estadísticas y misiones.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">RPG</span>
+              <span class="asset-tag">Starter Pack</span>
+              <span class="asset-tag">Sistemas</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$49.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-001', 'Starter Pack RPG', 49.99, 'fa-dungeon', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="systems">
+          <div class="asset-card-image">
+            <i class="fas fa-box asset-card-icon"></i>
+            <span class="asset-card-category">Sistemas</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Sistema de Inventario Pro</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.9</span></div>
+            </div>
+            <p class="asset-card-description">Sistema de inventario avanzado con drag & drop, categorías y persistencia de datos.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Sistema</span>
+              <span class="asset-tag">Inventario</span>
+              <span class="asset-tag">DataStore</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$29.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-002', 'Sistema de Inventario Pro', 29.99, 'fa-box', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="models">
+          <div class="asset-card-image">
+            <i class="fas fa-rocket asset-card-icon"></i>
+            <span class="asset-card-category">Modelos</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Pack de Armas Sci-Fi</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.9</span></div>
+            </div>
+            <p class="asset-card-description">10 armas futuristas con animaciones, sonidos y efectos de partículas.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Armas</span>
+              <span class="asset-tag">Sci-Fi</span>
+              <span class="asset-tag">3D</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$34.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-003', 'Pack de Armas Sci-Fi', 34.99, 'fa-rocket', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="ui">
+          <div class="asset-card-image">
+            <i class="fas fa-palette asset-card-icon"></i>
+            <span class="asset-card-category">UI</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Darkwave UI Pack</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.8</span></div>
+            </div>
+            <p class="asset-card-description">UI Pack con estilo neón/morado perfecto para juegos de temática oscura.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">UI</span>
+              <span class="asset-tag">Neón</span>
+              <span class="asset-tag">Moderno</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$15.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-004', 'Darkwave UI Pack', 15.99, 'fa-palette', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="systems">
+          <div class="asset-card-image">
+            <i class="fas fa-coins asset-card-icon"></i>
+            <span class="asset-card-category">Sistemas</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Sistema de Tienda/Economía</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.8</span></div>
+            </div>
+            <p class="asset-card-description">Sistema económico completo con múltiples monedas, tiendas y transacciones.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Economía</span>
+              <span class="asset-tag">Tienda</span>
+              <span class="asset-tag">Monedas</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$22.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-005', 'Sistema de Tienda/Economía', 22.99, 'fa-coins', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="scripts">
+          <div class="asset-card-image">
+            <i class="fas fa-fist-raised asset-card-icon"></i>
+            <span class="asset-card-category">Scripts</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Script de Combate Avanzado</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.7</span></div>
+            </div>
+            <p class="asset-card-description">Sistema de combate melee con combos, bloqueo y habilidades especiales.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Combate</span>
+              <span class="asset-tag">Melee</span>
+              <span class="asset-tag">Multiplayer</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$24.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-006', 'Script de Combate Avanzado', 24.99, 'fa-fist-raised', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="animations">
+          <div class="asset-card-image">
+            <i class="fas fa-walking asset-card-icon"></i>
+            <span class="asset-card-category">Animaciones</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Animaciones de Movimiento</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.6</span></div>
+            </div>
+            <p class="asset-card-description">20+ animaciones de movimiento profesionales para personajes.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Animaciones</span>
+              <span class="asset-tag">Movimiento</span>
+              <span class="asset-tag">Personaje</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$19.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-007', 'Animaciones de Movimiento', 19.99, 'fa-walking', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="ui">
+          <div class="asset-card-image">
+            <i class="fas fa-tachometer-alt asset-card-icon"></i>
+            <span class="asset-card-category">UI</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">HUD Minimalista</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.5</span></div>
+            </div>
+            <p class="asset-card-description">HUD limpio y moderno para cualquier tipo de juego.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">HUD</span>
+              <span class="asset-tag">UI</span>
+              <span class="asset-tag">Minimalista</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$12.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-008', 'HUD Minimalista', 12.99, 'fa-tachometer-alt', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="systems">
+          <div class="asset-card-image">
+            <i class="fas fa-scroll asset-card-icon"></i>
+            <span class="asset-card-category">Sistemas</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Sistema de Misiones Quest</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.9</span></div>
+            </div>
+            <p class="asset-card-description">Sistema completo de misiones con objetivos, recompensas y progresión.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Misiones</span>
+              <span class="asset-tag">Quest</span>
+              <span class="asset-tag">Progresión</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$27.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-009', 'Sistema de Misiones Quest', 27.99, 'fa-scroll', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="models">
+          <div class="asset-card-image">
+            <i class="fas fa-car asset-card-icon"></i>
+            <span class="asset-card-category">Modelos</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Pack de Vehículos</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.7</span></div>
+            </div>
+            <p class="asset-card-description">8 vehículos personalizables con física realista.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Vehículos</span>
+              <span class="asset-tag">Física</span>
+              <span class="asset-tag">3D</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$32.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-010', 'Pack de Vehículos', 32.99, 'fa-car', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="scripts">
+          <div class="asset-card-image">
+            <i class="fas fa-comments asset-card-icon"></i>
+            <span class="asset-card-category">Scripts</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Chat System Pro</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.6</span></div>
+            </div>
+            <p class="asset-card-description">Sistema de chat avanzado con canales, emojis y moderación.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Chat</span>
+              <span class="asset-tag">Comunicación</span>
+              <span class="asset-tag">Social</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$18.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-011', 'Chat System Pro', 18.99, 'fa-comments', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="asset-card" data-category="packs">
+          <div class="asset-card-image">
+            <i class="fas fa-magic asset-card-icon"></i>
+            <span class="asset-card-category">Packs</span>
+          </div>
+          <div class="asset-card-content">
+            <div class="asset-card-header">
+              <h3 class="asset-card-title">Pack de Efectos de Partículas</h3>
+              <div class="asset-card-rating"><i class="fas fa-star"></i><span>4.8</span></div>
+            </div>
+            <p class="asset-card-description">Colección de 30+ efectos de partículas para magia, explosiones y más.</p>
+            <div class="asset-card-tags">
+              <span class="asset-tag">Partículas</span>
+              <span class="asset-tag">Efectos</span>
+              <span class="asset-tag">VFX</span>
+            </div>
+            <div class="asset-card-footer">
+              <div class="asset-price">
+                <span class="asset-price-value">$21.99</span>
+                <span class="asset-price-currency">USD</span>
+              </div>
+              <button class="asset-add-cart" onclick="addManualAssetToCart('asset-012', 'Pack de Efectos de Partículas', 21.99, 'fa-magic', this)" title="Añadir al carrito">
+                <i class="fas fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      
+      <div class="no-results" id="no-results-msg">
+        <div class="no-results-icon"><i class="fas fa-search"></i></div>
+        <h3 class="no-results-title">No se encontraron resultados</h3>
+        <p class="no-results-description">Intenta con otros términos de búsqueda o categorías.</p>
+      </div>
+
+    </div>
+  </main>
+  
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="brand-logo"><i class="fas fa-gamepad"></i></div>
+            <span class="brand-text">GermanDev</span>
+          </div>
+          <p class="footer-description">
+            Desarrollador de juegos y assets para Roblox. Llevando tus ideas al 
+            siguiente nivel con código limpio y diseño profesional.
+          </p>
+          <div class="footer-social">
+            <a href="#" class="social-link" data-copy="GermanDev#1234"><i class="fab fa-discord"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4 class="footer-title">Navegación</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="Proyects.html">Portfolio</a></li>
+            <li><a href="Assets.html">Assets</a></li>
+            <li><a href="Services.html">Servicios</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-nav">
+          <h4 class="footer-title">Soporte</h4>
+          <ul class="footer-links">
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#" data-copy="contact@germandev.com">Contacto</a></li>
+            <li><a href="#">Reportar bug</a></li>
+            <li><a href="#">Sugerencias</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-nav">
+          <h4 class="footer-title">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#" data-modal="terms">Términos de uso</a></li>
+            <li><a href="#" data-modal="privacy">Política de privacidad</a></li>
+            <li><a href="#" data-modal="refunds">Política de reembolso</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p class="footer-copyright">&copy; 2024 GermanDev. Todos los derechos reservados.</p>
+        <div class="footer-legal">
+          <a href="#" data-modal="terms">Términos</a>
+          <a href="#" data-modal="privacy">Privacidad</a>
+          <a href="#" data-modal="refunds">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="../JS/main.js"></script>
+  
+  <script>
+    // Función para ir a login o dashboard
+    function goToAuth() {
+      if (typeof App !== 'undefined' && App.auth && App.auth.isAuthenticated) {
+        window.location.href = 'Dashboard.html';
+      } else {
+        window.location.href = 'Login.html';
+      }
+    }
+    
+    // Función para actualizar UI del botón de Auth
+    function updateAuthButton() {
+      const authBtn = document.getElementById('auth-btn');
+      const authText = document.getElementById('auth-text');
+      const userAvatar = document.getElementById('user-avatar');
+      
+      if (typeof App !== 'undefined' && App.auth && App.auth.isAuthenticated && App.auth.currentUser) {
+        if (authBtn) authBtn.style.display = 'none';
+        if (userAvatar) {
+          userAvatar.style.display = 'flex';
+          userAvatar.textContent = App.auth.currentUser.username.charAt(0).toUpperCase();
+          userAvatar.onclick = () => window.location.href = 'Dashboard.html';
+        }
+      } else {
+        if (authBtn) {
+          authBtn.style.display = 'flex';
+          authText.textContent = 'Iniciar sesión';
+        }
+        if (userAvatar) userAvatar.style.display = 'none';
+      }
+    }
+
+    // Nueva función para agregar al carrito manualmente sin depender de assets.js
+    function addManualAssetToCart(id, name, price, icon, button) {
+      if (typeof App === 'undefined' || !App.auth || !App.cart) {
+        console.warn('Los scripts de App no están cargados. El carrito no funcionará.');
+        return;
+      }
+      
+      if (!App.auth.isAuthenticated) {
+        App.toast.warning('Inicia sesión para comprar');
+        setTimeout(() => {
+          window.location.href = 'Login.html';
+        }, 1500);
+        return;
+      }
+      
+      const result = App.cart.addItem({
+        id: id,
+        name: name,
+        price: price,
+        icon: icon
+      });
+      
+      if (result.success) {
+        App.cart.animateFlyToCart(button, document.querySelector('.cart-btn'));
+        App.toast.success('¡Agregado al carrito!');
+      } else {
+        App.toast.error(result.error || 'Error al agregar al carrito');
+      }
+    }
+
+    // Script para que funcionen los filtros directamente en el HTML manual
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAuthButton();
+      
+      const tabs = document.querySelectorAll('.filter-tab');
+      const searchInput = document.getElementById('search-input');
+      const cards = document.querySelectorAll('.asset-card');
+      const noResultsMsg = document.getElementById('no-results-msg');
+
+      function filterAssets() {
+        const activeTab = document.querySelector('.filter-tab.active');
+        const category = activeTab ? activeTab.dataset.category : 'all';
+        const query = searchInput.value.toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const cardCategory = card.dataset.category;
+          const textContent = card.innerText.toLowerCase();
+          
+          const matchesCategory = category === 'all' || cardCategory === category;
+          const matchesSearch = textContent.includes(query);
+
+          if (matchesCategory && matchesSearch) {
+            card.style.display = 'block';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        // Mostrar u ocultar el mensaje de "No se encontraron resultados"
+        if (visibleCount === 0) {
+          noResultsMsg.style.display = 'block';
+        } else {
+          noResultsMsg.style.display = 'none';
+        }
+      }
+
+      // Eventos para las pestañas de categorías
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          filterAssets();
+        });
+      });
+
+      // Evento para el buscador
+      if (searchInput) {
+        searchInput.addEventListener('input', filterAssets);
+      }
+    });
+  </script>
+</body>
+</html>
